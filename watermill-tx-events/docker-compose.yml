@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  lottery:
+    container_name: lottery_publisher
+    build:
+      context: .
+      dockerfile: cmd/lottery/build/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+      - gcp
+    volumes:
+      - ./:/app
+      - $GOPATH/pkg/mod:/go/pkg/mod
+    env_file:
+      - cmd/lottery/build/.env
+
+  prizer:
+    container_name: prizer_subscriber
+    build:
+      context: .
+      dockerfile: cmd/prizer/build/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+      - gcp
+      - lottery
+    volumes:
+      - .:/app
+      - $GOPATH/pkg/mod:/go/pkg/mod
+    env_file:
+      - cmd/lottery/build/.env
+
+  db:
+    container_name: db
+    image: postgres:latest
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: watermill
+      POSTGRES_USER: watermill
+      POSTGRES_PASSWORD: password
+
+  gcp:
+    container_name: gcp
+    image: google/cloud-sdk:419.0.0
+    ports:
+      - "8085:8085"
+    entrypoint: gcloud --quiet beta emulators pubsub start --host-port=0.0.0.0:8085 --verbosity=debug --log-http
+    restart: unless-stopped
