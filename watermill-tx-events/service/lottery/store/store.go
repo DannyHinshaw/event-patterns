@@ -15,9 +15,8 @@ import (
 )
 
 type Statements struct {
-	createWinnersTable *sql.Stmt
-	getWinnerByID      *sql.Stmt
-	insertWinner       *sql.Stmt
+	getWinnerByID *sql.Stmt
+	insertWinner  *sql.Stmt
 }
 
 type Store struct {

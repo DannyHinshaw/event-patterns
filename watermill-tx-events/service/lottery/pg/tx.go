@@ -26,7 +26,7 @@ func TxContext(ctx context.Context, db Beginner, opts *sql.TxOptions, f func(*sq
 
 	defer func() {
 		if p := recover(); p != nil {
-			tx.Rollback()
+			tx.Rollback() //nolint:errcheck
 			panic(p)
 		} else if err != nil {
 			if err2 := tx.Rollback(); err2 != nil {

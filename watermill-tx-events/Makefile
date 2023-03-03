@@ -1,3 +1,6 @@
+lint:
+	golangci-lint run
+
 lottery: export DB_HOST=localhost
 lottery: export PUBSUB_EMULATOR_HOST=localhost:8085
 lottery:
