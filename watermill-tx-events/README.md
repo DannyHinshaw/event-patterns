@@ -18,19 +18,23 @@ The basic pattern is fairly simple:
 
 **Publisher**
 
-1. In a new db transaction
-    2. Create the new record in the business table
-    3. Create a new _event_ record to an "outbox" table
-    4. If both record creations succeed:
-        5. Commit
-    6. If either record creations fail:
-        7. Rollback
+In a new db transaction:
+
+    1. Create the new record in the business table
+    2. Create a new _event_ record to an "outbox" table
+    3. If both record creations succeed:
+        - Commit
+    4. If either record creations fail:
+        - Rollback
 
 **Subscriber**
 
-1. Poll the outbox table for new records
-    2. If new record found, send it to pubsub
-    3. Wait for verification that the send was successful
+Poll the outbox table for new records:
+
+    1. If new record found, send it to pubsub
+    2. Wait for verification that the send was successful
+
+**Outcome**
 
 Now in any case, you have a guaranteed event history stored that can be replayed
 at any time to recover from any networking issues that may occur and impact your app.
